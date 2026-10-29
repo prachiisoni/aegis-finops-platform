@@ -21,8 +21,6 @@ B2B SaaS companies are rapidly launching Generative AI features, but variable LL
 | **FinOps Diagnostic Toil** | 6–8 hrs manual SQL | **<15 seconds** | **99% faster via GenAI FinOps Copilot** |
 
 ## 3. Repository Structure
-* `docs/01_Product_Requirements_Document_PRD.md` — Market sizing (TAM/SAM/SOM), buyer personas, unit-economics equations, and RICE prioritization.
-* `docs/04_MBA_Case_Study_And_Interview_Guide.md` — Executive case study, resume bullets, and STAR interview breakdown.
 * `finops-gateway-service/` — Java 17 + Spring Boot 3 microservice (`SmartModelRoutingEngine`, `ClickHouseAndPrometheusService`, `AutonomousFinOpsAdvisor`, `FinOpsGatewayController`).
 * `clickhouse-db/` — ClickHouse `MergeTree` and `SummingMergeTree` Materialized Views for real-time tenant gross margin rollups.
 * `observability/` — Prometheus scrape configuration and auto-provisioned Grafana Executive Unit-Economics Command Center dashboard.
