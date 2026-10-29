@@ -1,0 +1,50 @@
+{
+  "id": null,
+  "uid": "aegis-finops-exec",
+  "title": "AegisFinOps: Executive CFO & PM Unit-Economics Command Center",
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "refresh": "5s",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Total Smart-Router Savings Captured (USD)",
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus_ds" },
+      "fieldConfig": { "defaults": { "unit": "currencyUSD", "decimals": 4, "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } } },
+      "targets": [{ "expr": "sum(aegis_llm_savings_usd_total)", "refId": "A" }]
+    },
+    {
+      "type": "stat",
+      "title": "Live Gateway AI + K8s COGS (USD)",
+      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus_ds" },
+      "fieldConfig": { "defaults": { "unit": "currencyUSD", "decimals": 4, "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [{ "color": "orange", "value": null }] } } },
+      "targets": [{ "expr": "sum(aegis_llm_cost_usd_total)", "refId": "A" }]
+    },
+    {
+      "type": "gauge",
+      "title": "Smart Router Cost Reduction Ratio (%)",
+      "gridPos": { "h": 6, "w": 8, "x": 16, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus_ds" },
+      "fieldConfig": { "defaults": { "unit": "percent", "min": 0, "max": 100, "thresholds": { "mode": "absolute", "steps": [{ "color": "yellow", "value": null }, { "color": "green", "value": 30 }] } } },
+      "targets": [{ "expr": "(sum(aegis_llm_savings_usd_total) / (sum(aegis_llm_savings_usd_total) + sum(aegis_llm_cost_usd_total))) * 100", "refId": "A" }]
+    },
+    {
+      "type": "barchart",
+      "title": "Automated Savings Captured by Product Feature (USD)",
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 6 },
+      "datasource": { "type": "prometheus", "uid": "prometheus_ds" },
+      "fieldConfig": { "defaults": { "unit": "currencyUSD", "decimals": 4 } },
+      "targets": [{ "expr": "sum by (feature) (aegis_llm_savings_usd_total)", "legendFormat": "{{feature}}", "refId": "A" }]
+    },
+    {
+      "type": "timeseries",
+      "title": "Real-Time COGS by Enterprise Tenant & Routed Model",
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 6 },
+      "datasource": { "type": "prometheus", "uid": "prometheus_ds" },
+      "fieldConfig": { "defaults": { "unit": "currencyUSD", "decimals": 4 } },
+      "targets": [{ "expr": "sum by (tenant, routed_model) (aegis_llm_cost_usd_total)", "legendFormat": "{{tenant}} ({{routed_model}})", "refId": "A" }]
+    }
+  ]
+}

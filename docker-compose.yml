@@ -1,0 +1,52 @@
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.3-alpine
+    container_name: aegis-clickhouse
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    environment:
+      CLICKHOUSE_DB: finops
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    volumes:
+      - ./clickhouse-db/init_finops_schema.sql:/docker-entrypoint-initdb.d/init_finops_schema.sql
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+
+  finops-gateway:
+    build: ./finops-gateway-service
+    container_name: aegis-finops-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - AEGIS_CLICKHOUSE_URL=http://clickhouse:8123/
+    depends_on:
+      - clickhouse
+
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    container_name: aegis-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - finops-gateway
+
+  grafana:
+    image: grafana/grafana:10.4.1
+    container_name: aegis-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning
+      - ./observability/grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      - clickhouse
+      - prometheus
